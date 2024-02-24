@@ -8,7 +8,6 @@ local Mouse = Players.LocalPlayer:GetMouse()
 local GuiService = game:GetService("GuiService")
 
 local Knit = require(ReplicatedStorage.Packages.Knit)
-local Fusion = require(ReplicatedStorage.Packages.Fusion)
 
 local GuiController = Knit.CreateController{Name = "GuiController"}
 
@@ -40,8 +39,8 @@ function GuiController:KnitStart()
     local MarketService = Knit.GetService("MarketService")
     local LobbyService = Knit.GetService("LobbyService")
     local Screens = {
-        Starting = MainMenu:FindFirstChild("StartingScreen"), -- done
-        Shop = MainMenu:FindFirstChild("ShopScreen"), --done
+        Starting = MainMenu:FindFirstChild("StartingScreen"),
+        Shop = MainMenu:FindFirstChild("ShopScreen"),
         Credit = MainMenu:FindFirstChild("CreditScreen"),
         Play = MainMenu:FindFirstChild("PlayScreen"),
     }

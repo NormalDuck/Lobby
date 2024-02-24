@@ -6,7 +6,7 @@ local Knit = require(ReplicatedStorage.Packages.Knit)
 local Signal = require(ReplicatedStorage.Packages.Signal)
 local TableUtil = require(ReplicatedStorage.Packages.TableUtil)
 local RemoveTableDupes = require(ReplicatedStorage.Shared.Utils.Essentials).RemoveTableDupes
-local OddOrEven = require(ReplicatedStorage.Source.Modules.Essentials).OddOrEven
+local OddOrEven = require(ReplicatedStorage.Shared.Utils.Essentials).OddOrEven
 
 local StackModule = require(script.StackModule)
 local NodeModule = require(script.NodeModule)

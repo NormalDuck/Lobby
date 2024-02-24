@@ -5,7 +5,7 @@ registry = "test"
 [[package]]
 name = "1juhu/maze-of-mystery"
 version = "0.1.0"
-dependencies = [["Comm", "sleitnick/comm@1.0.1"], ["Component", "sleitnick/component@2.4.8"], ["Input", "sleitnick/input@2.3.0"], ["Knit", "sleitnick/knit@1.7.0"], ["Signal", "sleitnick/signal@2.0.1"], ["Suphi", "skylord-103/suphisdatastoremodule@1.0.0"], ["TableUtil", "sleitnick/table-util@1.2.1"]]
+dependencies = [["Comm", "sleitnick/comm@1.0.1"], ["Component", "sleitnick/component@2.4.8"], ["Input", "sleitnick/input@2.3.0"], ["Knit", "sleitnick/knit@1.7.0"], ["Signal", "sleitnick/signal@2.0.1"], ["Suphi", "skylord-103/suphisdatastoremodule@1.0.0"], ["TableUtil", "sleitnick/table-util@1.2.1"], ["Trove", "sleitnick/trove@1.1.0"]]
 
 [[package]]
 name = "evaera/promise"
