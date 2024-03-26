@@ -1,8 +1,8 @@
 --!native
 local Stack = {}
 Stack.__index = Stack
-function Stack.new(Size:number)
-	local self = setmetatable({},Stack)
+function Stack.new(Size: number)
+	local self = setmetatable({}, Stack)
 	self.stack = {}
 	self.size = Size
 	self.top = -1
@@ -10,7 +10,7 @@ function Stack.new(Size:number)
 end
 
 function Stack:Push(Node)
-	if #self.stack == self.size then 
+	if #self.stack == self.size then
 		return "Stack Overflow"
 	end
 	self.top += 1

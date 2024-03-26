@@ -13,12 +13,12 @@ function Essentials.QuickWait(n: number)
 	end
 end
 
-function Essentials.RemoveTableDupes(t: table) 
-    local hash = {}
+function Essentials.RemoveTableDupes(t: table)
+	local hash = {}
 	local res = {}
-	for _,v in ipairs(t) do
-		if (not hash[v]) then
-			res[#res+1] = v
+	for _, v in ipairs(t) do
+		if not hash[v] then
+			res[#res + 1] = v
 			hash[v] = true
 		end
 	end
@@ -26,20 +26,20 @@ function Essentials.RemoveTableDupes(t: table)
 end
 
 function Essentials.DictLength(t: table): number
-    local n = 0
+	local n = 0
 
-    for _ in pairs(t) do
-        n = n + 1
-    end
-    return n
+	for _ in pairs(t) do
+		n = n + 1
+	end
+	return n
 end
 
 function Essentials.OddOrEven(n: number): "Odd" | "Even"
-    if (n % 2 == 0) then
-        return "Even"
-    else
-        return "Odd"
-    end
+	if n % 2 == 0 then
+		return "Even"
+	else
+		return "Odd"
+	end
 end
 
 return Essentials

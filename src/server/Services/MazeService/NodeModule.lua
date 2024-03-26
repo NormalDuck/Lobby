@@ -14,17 +14,17 @@ end)
 Node.__index = Node
 
 type self = {
-	X: number;
-	Y: number;
-	Event: string;
-	Visited: boolean;
-	Instance: Instance | boolean;
+	X: number,
+	Y: number,
+	Event: string,
+	Visited: boolean,
+	Instance: Instance | boolean,
 	Walls: {
-		Up: boolean;
-		Down: boolean;
-		Left: boolean;
-		Right: boolean;
-	}
+		Up: boolean,
+		Down: boolean,
+		Left: boolean,
+		Right: boolean,
+	},
 }
 export type Node = typeof(setmetatable({} :: self, Node))
 
@@ -37,11 +37,11 @@ function Node.new(X: number, Y: number, MazeSize: number): Node
 	self.Event = false
 	self._trove = Trove.new()
 	self.instance = false
-	self.Walls = {Up = true, Down = true, Left = true, Right = true}
+	self.Walls = { Up = true, Down = true, Left = true, Right = true }
 	return self
 end
 
-function Node:_FindNode(X :number, Y: number): self
+function Node:_FindNode(X: number, Y: number): self
 	local MazeService = Knit.GetService("MazeService")
 	local NewX = self.X + X
 	local NewY = self.Y + Y
@@ -51,7 +51,7 @@ function Node:_FindNode(X :number, Y: number): self
 	return MazeService.Nodes[NewX + (NewY - 1) * self.MazeSize]
 end
 
-function Node:FindNeighbors(Filter: "Visited" | "NonVisited", Dictionary: boolean, AllowEvents: boolean): {self} | nil
+function Node:FindNeighbors(Filter: "Visited" | "NonVisited", Dictionary: boolean, AllowEvents: boolean): { self } | nil
 	local Neighbors = {}
 	if Dictionary then
 		Neighbors.Up = false
@@ -63,10 +63,26 @@ function Node:FindNeighbors(Filter: "Visited" | "NonVisited", Dictionary: boolea
 	local Down = self:_FindNode(0, -1)
 	local Left = self:_FindNode(-1, 0)
 	local Right = self:_FindNode(1, 0)
-	if not AllowEvents and Up then if Up["Event"] then Up = nil end end
-	if not AllowEvents and Down then if Down["Event"] then Down = nil end end
-	if not AllowEvents and Left then if Left["Event"] then Left = nil end end
-	if not AllowEvents and Right then if Right["Event"] then Right = nil end end
+	if not AllowEvents and Up then
+		if Up["Event"] then
+			Up = nil
+		end
+	end
+	if not AllowEvents and Down then
+		if Down["Event"] then
+			Down = nil
+		end
+	end
+	if not AllowEvents and Left then
+		if Left["Event"] then
+			Left = nil
+		end
+	end
+	if not AllowEvents and Right then
+		if Right["Event"] then
+			Right = nil
+		end
+	end
 	if Up ~= nil then
 		if Filter == nil or (Filter == "NonVisited" and not Up.Visited) or (Filter == "Visited" and Up.Visited) then
 			if Dictionary then
@@ -98,7 +114,11 @@ function Node:FindNeighbors(Filter: "Visited" | "NonVisited", Dictionary: boolea
 	end
 
 	if Right ~= nil then
-		if Filter == nil or (Filter == "NonVisited" and not Right.Visited) or (Filter == "Visited" and Right.Visited) then
+		if
+			Filter == nil
+			or (Filter == "NonVisited" and not Right.Visited)
+			or (Filter == "Visited" and Right.Visited)
+		then
 			if Dictionary then
 				Neighbors.Right = Right
 			else
@@ -113,7 +133,6 @@ function Node:FindNeighbors(Filter: "Visited" | "NonVisited", Dictionary: boolea
 				if not Exists then
 					Neighbors[Side] = nil
 				end
-
 			end
 			return Neighbors
 		end
@@ -135,10 +154,16 @@ function Node:Render()
 
 	Model.Name = self.X .. ", " .. self.Y
 
-	self.Position = Vector3.new(StartingVector.X + CellSize * self.X, StartingVector.Y - (Height / -2), StartingVector.Z + CellSize * self.Y)
+	self.Position = Vector3.new(
+		StartingVector.X + CellSize * self.X,
+		StartingVector.Y - (Height / -2),
+		StartingVector.Z + CellSize * self.Y
+	)
 
 	for Index, Exists in pairs(self.Walls) do
-		if not Exists then continue end
+		if not Exists then
+			continue
+		end
 		local Wall = Instance.new("Part")
 		Wall.Anchored = true
 		Wall.Material = Material
@@ -150,17 +175,17 @@ function Node:Render()
 
 		if Index == "Down" then
 			Wall.Position = Vector3.new(self.Position.X - CellSize / 2, self.Position.Y, self.Position.Z - CellSize)
-			Wall.Size = Vector3.new(CellSize,Height,Thickness)
+			Wall.Size = Vector3.new(CellSize, Height, Thickness)
 		end
 
 		if Index == "Left" then
 			Wall.Position = Vector3.new(self.Position.X - CellSize, self.Position.Y, self.Position.Z - CellSize / 2)
-			Wall.Size = Vector3.new(Thickness,Height,CellSize)
+			Wall.Size = Vector3.new(Thickness, Height, CellSize)
 		end
 
 		if Index == "Right" then
 			Wall.Position = Vector3.new(self.Position.X, self.Position.Y, self.Position.Z - CellSize / 2)
-			Wall.Size = Vector3.new(Thickness,Height,CellSize)
+			Wall.Size = Vector3.new(Thickness, Height, CellSize)
 		end
 		Wall.Name = Index
 		Wall.CanTouch = false
@@ -174,7 +199,8 @@ function Node:Render()
 	TopWall.Material = Material
 	TopWall.Anchored = true
 	TopWall.Size = Vector3.new(CellSize, Thickness, CellSize)
-	TopWall.Position = Vector3.new(self.Position.X - CellSize / 2, self.Position.Y + Height / 2, self.Position.Z - CellSize / 2)
+	TopWall.Position =
+		Vector3.new(self.Position.X - CellSize / 2, self.Position.Y + Height / 2, self.Position.Z - CellSize / 2)
 	TopWall.Name = "Top"
 	TopWall.CanTouch = false
 	TopWall.CanQuery = false
@@ -184,7 +210,8 @@ function Node:Render()
 	BottomWall.Material = Material
 	BottomWall.Anchored = true
 	BottomWall.Size = Vector3.new(CellSize, Thickness, CellSize)
-	BottomWall.Position = Vector3.new(self.Position.X - CellSize / 2, self.Position.Y - Height / 2, self.Position.Z - CellSize / 2)
+	BottomWall.Position =
+		Vector3.new(self.Position.X - CellSize / 2, self.Position.Y - Height / 2, self.Position.Z - CellSize / 2)
 	BottomWall.Name = "Bottom"
 	TopWall.CanTouch = false
 	TopWall.CanQuery = false
@@ -197,7 +224,11 @@ function Node:Render()
 end
 
 function Node:ContainsEvent(): boolean
-	if self.Event then return self.Event else return false end
+	if self.Event then
+		return self.Event
+	else
+		return false
+	end
 end
 
 function Node:WallCount(): number

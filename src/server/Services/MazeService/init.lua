@@ -12,7 +12,6 @@ local StackModule = require(script.StackModule)
 local NodeModule = require(script.NodeModule)
 local Constants = require(script.Constants)
 
-
 export type Configurations = {
 	StartingNode: number,
 	MazeSize: number,
@@ -23,15 +22,15 @@ export type Configurations = {
 	Height: number,
 	StartingVector: Vector3,
 	Seed: number,
-	Algorithm: "Recursive" | "Prims"
+	Algorithm: "Recursive" | "Prims",
 }
 
-local MazeService = Knit.CreateService{
+local MazeService = Knit.CreateService({
 	Name = "MazeService",
-	Nodes = {NodeModule.Node},
+	Nodes = { NodeModule.Node },
 	Client = {},
 	Configurations = {} :: Configurations,
-}
+})
 
 local function RemoveWalls(CurrentNode, NextNode)
 	local X = CurrentNode.X - NextNode.X
@@ -59,7 +58,7 @@ function MazeService:NewMaze(Configurations: Configurations)
 		local Index = 1
 		for y = 1, BoardWidth do
 			for x = 1, BoardHeight do
-				local NewNode = NodeModule.new(x,y, BoardWidth)
+				local NewNode = NodeModule.new(x, y, BoardWidth)
 				table.insert(self.Nodes, NewNode)
 				Index += 1
 				--Removing walls is intended to remove extra instances that overlap
@@ -92,7 +91,6 @@ function MazeService:NewMaze(Configurations: Configurations)
 		local SelectedNode: NodeModule.Node = self.Nodes[self.Seed:NextInteger(1, #self.Nodes)]
 		local VaildNode = false
 		while true do
-
 			local NodesInRoom = {} :: NodeModule.Node
 			local FalseSignal = false
 			local BreakSignal = false
@@ -102,11 +100,18 @@ function MazeService:NewMaze(Configurations: Configurations)
 					local Node: NodeModule.Node = SelectedNode:_FindNode(x, y)
 					table.insert(NodesInRoom, Node)
 					if Node and Node then
-						if Node.Visited or Node.Visited then FalseSignal = true end
-					else FalseSignal = true  end
+						if Node.Visited or Node.Visited then
+							FalseSignal = true
+						end
+					else
+						FalseSignal = true
+					end
 				end
 			end
-			if FalseSignal then SelectedNode = self.Nodes[self.Seed:NextInteger(1, #self.Nodes)] continue end
+			if FalseSignal then
+				SelectedNode = self.Nodes[self.Seed:NextInteger(1, #self.Nodes)]
+				continue
+			end
 			for _, Node: NodeModule.Node in ipairs(NodesInRoom) do
 				local ReplacementIndex = table.find(self.Nodes, Node)
 				Node.Visited = true
@@ -133,27 +138,26 @@ function MazeService:NewMaze(Configurations: Configurations)
 			end
 			task.wait()
 		end
-
 	end
 	CreateBoard(self.Configurations.MazeSize, self.Configurations.MazeSize)
 
 	if self.Configurations.Algorithm == "Backtrack" then
-	local Stack = StackModule.new(self.Configurations.MazeSize * self.Configurations.MazeSize)
-	local CurrentNode = Stack:Push(self.Nodes[self.Configurations.StartingNode])
-	CurrentNode.Visited = true
-	self.Nodes[#self.Nodes].Walls.Up = false --Exit
-	while not Stack:IsEmpty() do
-		CurrentNode = Stack:Pop()
-		local Neighbors = CurrentNode:FindNeighbors("NonVisited")
-		if Neighbors ~= nil then
-			local NextNode = Neighbors[self.Seed:NextInteger(1, #Neighbors)]
-			Stack:Push(CurrentNode)
-			RemoveWalls(CurrentNode, NextNode)
-			NextNode.Visited = true
-			Stack:Push(NextNode)
+		local Stack = StackModule.new(self.Configurations.MazeSize * self.Configurations.MazeSize)
+		local CurrentNode = Stack:Push(self.Nodes[self.Configurations.StartingNode])
+		CurrentNode.Visited = true
+		self.Nodes[#self.Nodes].Walls.Up = false --Exit
+		while not Stack:IsEmpty() do
+			CurrentNode = Stack:Pop()
+			local Neighbors = CurrentNode:FindNeighbors("NonVisited")
+			if Neighbors ~= nil then
+				local NextNode = Neighbors[self.Seed:NextInteger(1, #Neighbors)]
+				Stack:Push(CurrentNode)
+				RemoveWalls(CurrentNode, NextNode)
+				NextNode.Visited = true
+				Stack:Push(NextNode)
+			end
 		end
-	end
-	Stack:Destroy()
+		Stack:Destroy()
 	end
 
 	if self.Configurations.Algorithm == "Prims" then
@@ -169,7 +173,10 @@ function MazeService:NewMaze(Configurations: Configurations)
 				Frontier = TableUtil.Extend(Frontier, CurrentNode:FindNeighbors("NonVisited"))
 				Frontier = RemoveTableDupes(Frontier)
 			end
-			RemoveWalls(CurrentNode:FindNeighbors("Visited")[self.Seed:NextInteger(1, #CurrentNode:FindNeighbors("Visited"))], CurrentNode)
+			RemoveWalls(
+				CurrentNode:FindNeighbors("Visited")[self.Seed:NextInteger(1, #CurrentNode:FindNeighbors("Visited"))],
+				CurrentNode
+			)
 			table.remove(Frontier, table.find(Frontier, CurrentNode))
 		end
 	end
@@ -196,7 +203,7 @@ function MazeService:NewMaze(Configurations: Configurations)
 			table.insert(Possible3Walls, Node)
 		end
 	end
-	
+
 	for _, Node in ipairs(Possible3Walls) do
 		local Neighbors = Node:FindNeighbors("Visited", true)
 		for Side, OtherNode in pairs(Neighbors) do
@@ -222,23 +229,21 @@ function MazeService:NewMaze(Configurations: Configurations)
 end
 
 function MazeService:_MarkEvents()
-
 	local AvailableNodes: number = #self.Nodes
 
 	local _Events = {
-		QuestGiver1 = 1;
-		QuestGiver2 = 1;
-		QuestGiver3 = 1;
-		QuestGiver4 = 1;
+		QuestGiver1 = 1,
+		QuestGiver2 = 1,
+		QuestGiver3 = 1,
+		QuestGiver4 = 1,
 
-		Exit = 1;
-		Spawn = 1;
+		Exit = 1,
+		Spawn = 1,
 	}
 
 	local _EventPercentages = setmetatable({
-		Empty = 90;
-		Paintings = 10;
-
+		Empty = 90,
+		Paintings = 10,
 	}, {
 		__div = function(Table, _AvailableNodes)
 			local TranslatedTable = TableUtil.Copy(Table)
@@ -246,7 +251,7 @@ function MazeService:_MarkEvents()
 				TranslatedTable[EventName] = math.round((EventPercent / 100) * _AvailableNodes)
 			end
 			return TranslatedTable
-		end
+		end,
 	})
 
 	for EventName, MaximumAllowed in pairs(_Events) do
@@ -305,24 +310,19 @@ function MazeService:Render()
 			None += 1
 		end
 		if Node:WallCount() == 1 then
-			Edge +=1
+			Edge += 1
 		end
 		if Node:WallCount() == 2 then
-			Hallways +=1
+			Hallways += 1
 		end
 		if Node:WallCount() == 3 then
 			Deadends += 1
 		end
-
 	end
 end
 
-function MazeService:KnitInit()
-	
-end
+function MazeService:KnitInit() end
 
-function MazeService:KnitStart()
-	
-end
+function MazeService:KnitStart() end
 
 return MazeService

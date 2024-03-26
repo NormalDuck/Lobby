@@ -6,8 +6,7 @@ local Knit = require(ReplicatedStorage.Packages.Knit)
 
 Knit.AddControllers(StarterPlayerScripts.Client.Controllers)
 
-
 Knit.Start():andThen(function()
-    local CameraController = Knit.GetController("CameraController")
-    CameraController:LockToPart(workspace:WaitForChild("Part"), false, Enum.EasingStyle.Linear, 0)
+	local CameraController = Knit.GetController("CameraController")
+	CameraController:LockToPart(workspace:WaitForChild("Part"), false, Enum.EasingStyle.Linear, 0)
 end)
